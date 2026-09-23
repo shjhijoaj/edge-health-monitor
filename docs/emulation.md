@@ -106,7 +106,7 @@ pwsh -NoProfile -ExecutionPolicy Bypass -File tools\sim\run_emulation.ps1 -Image
 
 ## 和真板相比还差什么
 
-这段边界在对外介绍项目时要用得上，所以列清楚：
+仿真与真板的差异如下：
 
 | 项目 | 仿真能证明 | 仿真不能证明 |
 | --- | --- | --- |
@@ -117,7 +117,7 @@ pwsh -NoProfile -ExecutionPolicy Bypass -File tools\sim\run_emulation.ps1 -Image
 | 可靠性 | 看门狗可触发复位并恢复 | 电压跌落、复位电路、看门狗硬件行为 |
 | 时间 | 以模拟时钟计的运行时长 | 真实墙钟下的稳定运行 |
 
-另外要注意：仿真里 QEMU 执行速度慢于真实处理器，所以"模拟运行时间"明显小于墙钟时间。引用数据时要写清楚用的是哪一个口径。
+另外，仿真里 QEMU 的执行速度低于真实处理器，所以"模拟运行时间"明显小于墙钟时间。报告里的两个数值应分别注明。
 
 ## 迁移到真板的顺序
 

@@ -71,7 +71,7 @@ ctest --test-dir build -C Release -R sensor_drivers --output-on-failure
 
 ## 已知简化
 
-这几点在对外介绍时要讲清楚，避免夸大：
+这几点属于当前实现的边界：
 
 | 项目 | 现状 | 真板上的差别 |
 | --- | --- | --- |
