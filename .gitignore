@@ -1,0 +1,20 @@
+build/
+build-firmware/
+build-firmware-obj/
+out/
+cmake-build-*/
+.tools/
+*.o
+*.obj
+*.a
+*.lib
+*.exe
+# Runtime telemetry only; hardware/bom.csv is tracked on purpose.
+data/*.csv
+data/*.log
+data/*.ehraw
+__pycache__/
+*.pyc
+.vscode/
+.idea/
+.idea/
