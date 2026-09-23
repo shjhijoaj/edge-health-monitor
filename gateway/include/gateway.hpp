@@ -63,7 +63,12 @@ private:
     std::ofstream stream_;
 };
 
-class MqttPublisher {
+/*
+ * Builds the JSON payload that a telemetry uplink would carry. This class only
+ * formats data; it does not speak MQTT. Wiring it to a broker (or to any other
+ * transport) is a separate step, so the name says what it actually does.
+ */
+class JsonPublisher {
 public:
     std::string make_payload(const Sample& sample) const;
     std::string make_alert_payload(const Alert& alert) const;
@@ -85,7 +90,7 @@ private:
     eh_decoder_t decoder_{};
     CsvStore store_;
     RuleEngine rules_;
-    MqttPublisher publisher_;
+    JsonPublisher publisher_;
     std::vector<Alert> last_alerts_;
 };
 

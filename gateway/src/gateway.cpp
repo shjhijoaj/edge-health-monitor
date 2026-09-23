@@ -108,7 +108,7 @@ void CsvStore::append(const Sample& sample) {
     stream_.flush();
 }
 
-std::string MqttPublisher::make_payload(const Sample& sample) const {
+std::string JsonPublisher::make_payload(const Sample& sample) const {
     std::ostringstream json;
     json << std::fixed << std::setprecision(2)
          << "{\"sequence\":" << sample.sequence
@@ -121,7 +121,7 @@ std::string MqttPublisher::make_payload(const Sample& sample) const {
     return json.str();
 }
 
-std::string MqttPublisher::make_alert_payload(const Alert& alert) const {
+std::string JsonPublisher::make_alert_payload(const Alert& alert) const {
     std::ostringstream json;
     json << "{\"sequence\":" << alert.sequence
          << ",\"message\":\"" << json_escape(alert.message) << "\"}";
