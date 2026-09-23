@@ -1,0 +1,27 @@
+[
+  {
+    "Step": "Python 语法检查",
+    "Status": "PASS",
+    "Detail": "4 个文件"
+  },
+  {
+    "Step": "主机测试（MSVC + CTest）",
+    "Status": "PASS",
+    "Detail": "100% tests passed, 0 tests failed out of 2"
+  },
+  {
+    "Step": "主机测试（GCC）",
+    "Status": "PASS",
+    "Detail": "protocol tests passed / gateway tests passed"
+  },
+  {
+    "Step": "Cortex-M3 固件构建",
+    "Status": "PASS",
+    "Detail": ""
+  },
+  {
+    "Step": "QEMU 看门狗演示",
+    "Status": "SKIP",
+    "Detail": "按参数跳过"
+  }
+]

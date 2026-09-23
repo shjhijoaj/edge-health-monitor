@@ -1,0 +1,11 @@
+{
+  "image": "watchdog",
+  "machine": "lm3s6965evb",
+  "wall_seconds": 90,
+  "guest_uptime_ms_max": 3000,
+  "frame_lines": 191,
+  "frames_recovered": 191,
+  "bad_frames": 0,
+  "boot_count": 3,
+  "watchdog_resets": 2
+}

@@ -1,0 +1,75 @@
+name: ci
+
+on:
+  push:
+  pull_request:
+
+jobs:
+  host:
+    name: host tests (Linux / GCC)
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Python syntax
+        run: python3 -m py_compile tools/*.py
+
+      - name: Configure
+        run: cmake -S . -B build -DCMAKE_BUILD_TYPE=Release
+
+      - name: Build
+        run: cmake --build build --parallel
+
+      - name: Test
+        run: ctest --test-dir build --output-on-failure
+
+      - name: Simulator and independent decoder round trip
+        run: |
+          ./build/edge_health_sim --raw capture.ehraw telemetry.csv > simulator.log
+          tail -n 2 simulator.log
+          python3 tools/make_chart.py --input capture.ehraw --output chart.svg
+          test -s chart.svg
+
+  firmware:
+    name: firmware build and emulation (Cortex-M3)
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Install ARM toolchain and QEMU
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y --no-install-recommends gcc-arm-none-eabi qemu-system-arm
+
+      - name: Fetch FreeRTOS kernel
+        run: |
+          mkdir -p .tools
+          curl -sSL -o .tools/FreeRTOS-Kernel.zip \
+            https://codeload.github.com/FreeRTOS/FreeRTOS-Kernel/zip/refs/heads/main
+          unzip -q .tools/FreeRTOS-Kernel.zip -d .tools
+          test -f .tools/FreeRTOS-Kernel-main/tasks.c
+
+      - name: Build firmware
+        run: bash tools/sim/build_firmware.sh
+
+      - name: Run firmware in QEMU
+        run: bash tools/sim/run_emulation.sh watchdog 120
+
+      - name: Check evidence
+        run: |
+          python3 - <<'PY'
+          import json, pathlib
+          metrics = json.loads(pathlib.Path("docs/evidence/metrics-watchdog.json").read_text())
+          print(metrics)
+          assert metrics["bad_frames"] == 0, metrics
+          assert metrics["frames_recovered"] >= 30, metrics
+          assert metrics["watchdog_resets"] >= 1, metrics
+          PY
+
+      - name: Upload evidence
+        uses: actions/upload-artifact@v4
+        with:
+          name: firmware-evidence
+          path: |
+            docs/evidence/metrics-watchdog.json
+            docs/evidence/watchdog-uart.log
