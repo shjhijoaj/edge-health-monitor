@@ -1,0 +1,50 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Edge Health Monitor</title>
+  <link rel="stylesheet" href="/style.css">
+</head>
+<body>
+  <main class="shell">
+    <header class="topbar">
+      <div>
+        <p class="eyebrow">EDGE HEALTH MONITOR</p>
+        <h1>设备健康监测台</h1>
+        <p class="subtitle">C/C++ 遥测链路 · 本地数据面板 · 每 2 秒刷新</p>
+      </div>
+      <div id="connection" class="connection offline">连接中</div>
+    </header>
+
+    <section class="cards">
+      <article class="card"><span>设备</span><strong id="device">—</strong><small id="sample-count">0 条采样</small></article>
+      <article class="card"><span>最高温度</span><strong id="max-temperature">—</strong><small id="limit-temperature">阈值读取中</small></article>
+      <article class="card"><span>最高电流</span><strong id="max-current">—</strong><small id="limit-current">阈值读取中</small></article>
+      <article class="card"><span>告警数量</span><strong id="alert-count">0</strong><small id="limit-vibration">阈值读取中</small></article>
+    </section>
+
+    <section class="grid">
+      <article class="panel chart-panel">
+        <div class="panel-title"><h2>温度趋势</h2><span id="last-update">等待数据</span></div>
+        <div id="chart" class="chart"></div>
+      </article>
+      <article class="panel">
+        <div class="panel-title"><h2>最近告警</h2><span class="badge">实时</span></div>
+        <div id="alerts" class="alerts"><p class="empty">暂无告警</p></div>
+      </article>
+    </section>
+
+    <section class="panel">
+      <div class="panel-title"><h2>最近采样</h2><span id="source">telemetry.csv</span></div>
+      <div class="table-wrap">
+        <table>
+          <thead><tr><th>序号</th><th>温度</th><th>湿度</th><th>电流</th><th>振动 RMS</th><th>状态</th><th>运行时间</th></tr></thead>
+          <tbody id="telemetry"><tr><td colspan="7" class="empty">等待 C++ 网关写入数据</td></tr></tbody>
+        </table>
+      </div>
+    </section>
+  </main>
+  <script src="/app.js"></script>
+</body>
+</html>

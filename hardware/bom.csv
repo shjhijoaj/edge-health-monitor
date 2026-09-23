@@ -1,0 +1,9 @@
+item,part,quantity,role,notes
+development board,STM32F103C8T6 or NUCLEO-G071RB,1,MCU target,choose one board
+accelerometer,MPU6050 breakout,1,vibration input,I2C
+environment sensor,BME280 breakout,1,temperature and humidity,I2C
+current monitor,INA219 breakout,1,current and voltage,I2C
+display,SSD1306 0.96 inch OLED,1,local status,I2C
+serial link,USB-UART or MAX3485 RS485 module,1,host link,3.3 V logic
+indicator,LED plus 220 ohm resistor,1,local status,GPIO
+protection,logic-level MOSFET plus flyback diode,1,optional actuator,for fan or relay
