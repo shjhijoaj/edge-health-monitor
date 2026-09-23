@@ -1,5 +1,7 @@
 # Edge Health Monitor
 
+[![ci](https://github.com/shjhijoaj/edge-health-monitor/actions/workflows/ci.yml/badge.svg)](https://github.com/shjhijoaj/edge-health-monitor/actions/workflows/ci.yml)
+
 设备健康监测系统，包含 C 固件协议库、C++17 边缘网关、串口桥接和本地监控面板。全部功能都能在一台电脑上运行，不依赖任何在线服务。
 
 ![本地面板](docs/evidence/panel-screenshot.png)

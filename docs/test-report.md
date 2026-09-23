@@ -18,6 +18,27 @@ pwsh -NoProfile -ExecutionPolicy Bypass -File tools\verify_all.ps1
 
 同一份 C/C++ 代码在 MSVC 和 GCC 两套编译器下都通过测试，说明代码没有依赖某个编译器的扩展行为。
 
+## GitHub Actions（Ubuntu）实测
+
+CI 在 Ubuntu runner 上跑两个任务，都通过：
+
+| 任务 | 覆盖内容 | 结果 |
+| --- | --- | --- |
+| host tests (Linux / GCC) | Python 语法、CMake 配置、GCC 编译、CTest、模拟器 + 独立解码器往返 | success |
+| firmware build and emulation (Cortex-M3) | 安装 arm-none-eabi 与 QEMU、拉取 FreeRTOS、交叉编译固件、QEMU 运行 180 秒、校验证据文件 | success |
+
+固件任务在 runner 上的实测指标：
+
+| 指标 | 数值 |
+| --- | --- |
+| 墙钟运行时间 | 180 s |
+| 输出帧 / 还原帧 | 381 / 381 |
+| 错帧 | 0 |
+| 启动次数 | 5 |
+| 看门狗复位次数 | 4 |
+
+也就是说，从干净克隆开始，Linux runner 能自动完成"交叉编译固件 → 在 Cortex-M3 上运行 → 看门狗复位并恢复 → 校验帧完整"的全过程，不需要任何本地环境准备。
+
 ## Automated checks
 
 Run:
