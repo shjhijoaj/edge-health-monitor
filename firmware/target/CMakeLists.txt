@@ -4,15 +4,14 @@ project(edge_health_firmware LANGUAGES C ASM)
 set(CMAKE_C_STANDARD 99)
 set(CMAKE_C_STANDARD_REQUIRED ON)
 
-set(FREERTOS_ROOT "${CMAKE_CURRENT_SOURCE_DIR}/../../../.tools/FreeRTOS-Kernel-main"
-    CACHE PATH "Extracted FreeRTOS-Kernel directory")
+set(FREERTOS_ROOT "${CMAKE_CURRENT_SOURCE_DIR}/../third_party/FreeRTOS-Kernel"
+    CACHE PATH "FreeRTOS-Kernel directory (vendored under firmware/third_party)")
 
 if(NOT EXISTS "${FREERTOS_ROOT}/tasks.c")
     message(FATAL_ERROR
         "FreeRTOS kernel not found at ${FREERTOS_ROOT}.\n"
-        "Download and extract it first, for example:\n"
-        "  Invoke-WebRequest https://codeload.github.com/FreeRTOS/FreeRTOS-Kernel/zip/refs/heads/main -OutFile .tools/FreeRTOS-Kernel.zip\n"
-        "  Expand-Archive .tools/FreeRTOS-Kernel.zip -DestinationPath .tools")
+        "The kernel is vendored under firmware/third_party/FreeRTOS-Kernel;\n"
+        "see firmware/third_party/FreeRTOS-Kernel/VENDORED.md to restore or update it.")
 endif()
 
 set(FREERTOS_PORT "${FREERTOS_ROOT}/portable/GCC/ARM_CM3")

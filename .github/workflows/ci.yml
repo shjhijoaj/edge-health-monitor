@@ -46,15 +46,8 @@ jobs:
           arm-none-eabi-gcc --version | head -n 1
           arm-none-eabi-size --version | head -n 1
 
-      - name: Fetch FreeRTOS kernel
-        run: |
-          mkdir -p .tools
-          curl -sSL -o .tools/FreeRTOS-Kernel.zip \
-            https://codeload.github.com/FreeRTOS/FreeRTOS-Kernel/zip/refs/heads/main
-          unzip -q .tools/FreeRTOS-Kernel.zip -d .tools
-          test -f .tools/FreeRTOS-Kernel-main/tasks.c
-
       - name: Build firmware
+        # The kernel is vendored under firmware/third_party, so no download step.
         run: bash tools/sim/build_firmware.sh
 
       - name: Run firmware in QEMU

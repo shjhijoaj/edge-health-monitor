@@ -28,7 +28,7 @@ if (-not $ToolchainRoot) {
     throw "找不到 arm-none-eabi-gcc。请安装：pacman -S mingw-w64-ucrt-x86_64-arm-none-eabi-gcc，或用 -ToolchainRoot 指定目录。"
 }
 if ([string]::IsNullOrWhiteSpace($FreeRtosRoot)) {
-    $FreeRtosRoot = Join-Path $repoRoot '.tools\FreeRTOS-Kernel-main'
+    $FreeRtosRoot = Join-Path $repoRoot 'firmware\third_party\FreeRTOS-Kernel'
 }
 
 $gcc = Join-Path $ToolchainRoot 'arm-none-eabi-gcc.exe'

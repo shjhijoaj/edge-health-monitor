@@ -45,7 +45,7 @@ ctest --test-dir build -C Release --output-on-failure
 build\Release\edge_health_sim.exe telemetry.csv
 ```
 
-模拟器会输出遥测 JSON 和告警，并生成 CSV 文件。默认阈值为 80.00 摄氏度、2500 mA 和 500 mg RMS；阈值集中在 `gateway/include/gateway.hpp`，方便你在面试中演示参数调整。
+模拟器会输出遥测 JSON 和告警，并生成 CSV 文件。默认阈值为 80.00 摄氏度、2500 mA 和 500 mg RMS；这些值集中在 `config/thresholds.cfg`，改一处即可同时影响网关和面板。
 
 ## 启动本地监控面板
 

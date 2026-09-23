@@ -22,18 +22,7 @@ C:\msys64\usr\bin\pacman.exe -S --noconfirm --needed `
     mingw-w64-ucrt-x86_64-qemu
 ```
 
-FreeRTOS 内核不在仓库里（`.tools/` 已被忽略），需要先下载一次，大约 4 MB：
-
-```powershell
-cd <仓库根目录>
-New-Item -ItemType Directory -Force -Path .tools | Out-Null
-Invoke-WebRequest `
-    -Uri 'https://codeload.github.com/FreeRTOS/FreeRTOS-Kernel/zip/refs/heads/main' `
-    -OutFile '.tools\FreeRTOS-Kernel.zip'
-Expand-Archive '.tools\FreeRTOS-Kernel.zip' -DestinationPath '.tools' -Force
-```
-
-解压后应该是 `.tools\FreeRTOS-Kernel-main\`，里面能看到 `tasks.c`、`queue.c`、`portable\GCC\ARM_CM3\`。如果目录名不同，用 `-FreeRtosRoot` 参数指定，或设置 CMake 的 `FREERTOS_ROOT` 变量。
+FreeRTOS 内核已经内置在仓库的 `firmware/third_party/FreeRTOS-Kernel/`（MIT 许可，来源与更新方式见该目录的 `VENDORED.md`），所以克隆之后不需要额外下载。只有想换版本时才需要重新获取，用 `-FreeRtosRoot` 或 `FREERTOS_ROOT` 指向另一份内核即可。
 
 ## 目标平台
 

@@ -14,7 +14,7 @@ pwsh -NoProfile -ExecutionPolicy Bypass -File tools\verify_all.ps1
 | 主机测试（MSVC + CTest） | PASS | 100% tests passed, 0 failed out of 3 |
 | 主机测试（GCC） | PASS | 协议、网关、传感器三组测试全部通过 |
 | Cortex-M3 固件交叉编译 | PASS | 生成两个 ELF 镜像 |
-| QEMU 看门狗演示 | PASS | 192 帧，错帧 0，看门狗复位 2 次 |
+| QEMU 看门狗演示 | PASS | 244 帧，错帧 0，看门狗复位 3 次 |
 
 同一份 C/C++ 代码在 MSVC 和 GCC 两套编译器下都通过测试，说明代码没有依赖某个编译器的扩展行为。
 

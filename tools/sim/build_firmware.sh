@@ -8,7 +8,7 @@
 set -euo pipefail
 
 repo_root="$(cd "$(dirname "${BASH_SOURCE[0]}")/../.." && pwd)"
-freertos_root="${FREERTOS_ROOT:-$repo_root/.tools/FreeRTOS-Kernel-main}"
+freertos_root="${FREERTOS_ROOT:-$repo_root/firmware/third_party/FreeRTOS-Kernel}"
 build_dir="$repo_root/build-firmware"
 prefix="${ARM_TOOLCHAIN_PREFIX:-arm-none-eabi-}"
 
