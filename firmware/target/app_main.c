@@ -23,6 +23,8 @@
 
 #include "board.h"
 #include "eh_protocol.h"
+#include "i2c_bus.h"
+#include "sensor.h"
 
 #include <stdint.h>
 
@@ -164,36 +166,44 @@ static void tx_task(void *argument) {
     }
 }
 
-static eh_sample_t make_sample(uint16_t sequence) {
-    const uint16_t phase = (uint16_t)((sequence - 1u) % 24u);
-    eh_sample_t sample;
-    sample.temperature_centi_c = (int32_t)(6200 + (int32_t)phase * 90);
-    sample.humidity_centi_pct = 4860;
-    sample.current_ma = (sequence % 15u == 0u) ? 3100 : 920;
-    sample.vibration_rms_mg = (sequence % 18u == 0u) ? 880 : 120;
-    sample.status = (sequence % 23u == 0u) ? 1u : 0u;
-    sample.uptime_s = (uint32_t)sequence / 10u;
-    return sample;
-}
-
 static void sample_task(void *argument) {
     (void)argument;
+    const sensor_driver_t *driver = sensor_active();
     TickType_t last_wake = xTaskGetTickCount();
+    uint32_t sample_clock_ms = 0u;
+    sensor_reading_t reading;
+    eh_sample_t sample;
 #if EHM_WATCHDOG_DEMO
-    uint32_t elapsed_ms = 0u;
     int stall_injected = 0;
 #endif
 
+    (void)driver->init();
+
     for (;;) {
 #if EHM_WATCHDOG_DEMO
-        if (stall_injected == 0 && elapsed_ms >= EHM_STALL_AFTER_MS) {
+        if (stall_injected == 0 && sample_clock_ms >= EHM_STALL_AFTER_MS) {
             stall_injected = 1;
             log_message("FAULT ", "deliberate sensor read hang injected");
             /* Modelling a blocking driver call: no heartbeat update happens. */
             vTaskDelay(pdMS_TO_TICKS(EHM_STALL_DURATION_MS));
         }
 #endif
-        const eh_sample_t sample = make_sample(g_sequence);
+        /*
+         * The register model is advanced with the sampling clock, and one
+         * missing-device event per 23 samples exercises the fault path so the
+         * status bit reaches the gateway.
+         */
+        i2c_bus_sim_set_tick(sample_clock_ms);
+        i2c_bus_sim_set_fault((g_sequence % 23u) == 0u ? 1 : 0);
+        (void)driver->read(&reading);
+
+        sample.temperature_centi_c = reading.temperature_centi_c;
+        sample.humidity_centi_pct = reading.humidity_centi_pct;
+        sample.current_ma = reading.current_ma;
+        sample.vibration_rms_mg = reading.vibration_rms_mg;
+        sample.status = reading.status;
+        sample.uptime_s = (uint32_t)(xTaskGetTickCount() / configTICK_RATE_HZ);
+
         uint8_t frame[EH_MAX_FRAME_SIZE];
         size_t frame_size = 0u;
 
@@ -204,9 +214,7 @@ static void sample_task(void *argument) {
         }
         g_sequence = (uint16_t)(g_sequence + 1u);
         g_sample_heartbeat = g_sample_heartbeat + 1u;
-#if EHM_WATCHDOG_DEMO
-        elapsed_ms += EHM_SAMPLE_PERIOD_MS;
-#endif
+        sample_clock_ms += EHM_SAMPLE_PERIOD_MS;
 
         vTaskDelayUntil(&last_wake, pdMS_TO_TICKS(EHM_SAMPLE_PERIOD_MS));
     }

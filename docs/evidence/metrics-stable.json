@@ -1,14 +1,14 @@
 {
   "image": "stable",
   "machine": "lm3s6965evb",
-  "wall_seconds": 600.3,
-  "guest_uptime_ms_max": 147000,
-  "guest_uptime_ms_last": 147000,
-  "frame_lines": 1479,
-  "frames_recovered": 1479,
+  "wall_seconds": 600.1,
+  "guest_uptime_ms_max": 120000,
+  "guest_uptime_ms_last": 120000,
+  "frame_lines": 1202,
+  "frames_recovered": 1202,
   "bad_frames": 0,
-  "frames_replayed": 1479,
+  "frames_replayed": 0,
   "boot_count": 1,
   "watchdog_resets": 0,
-  "generated_at": "2026-09-23T15:25:03"
+  "generated_at": "2026-09-23T16:42:36"
 }

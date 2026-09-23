@@ -53,6 +53,11 @@ $sources = @(
     (Join-Path $repoRoot 'firmware\target\startup.c'),
     (Join-Path $repoRoot 'firmware\src\eh_protocol.c'),
     (Join-Path $repoRoot 'firmware\src\eh_measurement.c'),
+    (Join-Path $repoRoot 'firmware\target\sensors\i2c_bus_sim.c'),
+    (Join-Path $repoRoot 'firmware\target\sensors\i2c_bus_hal.c'),
+    (Join-Path $repoRoot 'firmware\target\sensors\sensor.c'),
+    (Join-Path $repoRoot 'firmware\target\sensors\sensor_i2c.c'),
+    (Join-Path $repoRoot 'firmware\target\sensors\sensor_sim.c'),
     (Join-Path $FreeRtosRoot 'tasks.c'),
     (Join-Path $FreeRtosRoot 'queue.c'),
     (Join-Path $FreeRtosRoot 'list.c'),
@@ -62,6 +67,7 @@ $sources = @(
 
 $includes = @(
     (Join-Path $repoRoot 'firmware\target'),
+    (Join-Path $repoRoot 'firmware\target\sensors'),
     (Join-Path $repoRoot 'firmware\include'),
     (Join-Path $FreeRtosRoot 'include'),
     $port

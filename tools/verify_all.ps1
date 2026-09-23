@@ -92,8 +92,14 @@ if ((Test-Path $gcc) -and (Test-Path $gpp)) {
         @($gcc, '-std=c99', '-O2', '-Wall', '-Wextra', "-I$mirror\firmware\include", '-c', "$mirror\firmware\src\eh_protocol.c", '-o', "$obj\eh_protocol.o"),
         @($gcc, '-std=c99', '-O2', '-Wall', '-Wextra', "-I$mirror\firmware\include", '-c', "$mirror\firmware\src\eh_measurement.c", '-o', "$obj\eh_measurement.o"),
         @($gpp, '-std=c++17', '-O2', '-Wall', '-Wextra', "-I$mirror\firmware\include", "-I$mirror\gateway\include", '-c', "$mirror\gateway\src\gateway.cpp", '-o', "$obj\gateway.o"),
+        @($gcc, '-std=c99', '-O2', '-Wall', '-Wextra', "-I$mirror\firmware\target\sensors", '-c', "$mirror\firmware\target\sensors\i2c_bus_sim.c", '-o', "$obj\i2c_bus_sim.o"),
+        @($gcc, '-std=c99', '-O2', '-Wall', '-Wextra', "-I$mirror\firmware\target\sensors", '-c', "$mirror\firmware\target\sensors\i2c_bus_hal.c", '-o', "$obj\i2c_bus_hal.o"),
+        @($gcc, '-std=c99', '-O2', '-Wall', '-Wextra', "-I$mirror\firmware\target\sensors", '-c', "$mirror\firmware\target\sensors\sensor.c", '-o', "$obj\sensor.o"),
+        @($gcc, '-std=c99', '-O2', '-Wall', '-Wextra', "-I$mirror\firmware\target\sensors", '-c', "$mirror\firmware\target\sensors\sensor_i2c.c", '-o', "$obj\sensor_i2c.o"),
+        @($gcc, '-std=c99', '-O2', '-Wall', '-Wextra', "-I$mirror\firmware\target\sensors", '-c', "$mirror\firmware\target\sensors\sensor_sim.c", '-o', "$obj\sensor_sim.o"),
         @($gcc, '-std=c99', '-O2', "-I$mirror\firmware\include", "$mirror\tests\test_protocol.c", "$obj\eh_protocol.o", "$obj\eh_measurement.o", '-o', "$obj\test_protocol.exe"),
-        @($gpp, '-std=c++17', '-O2', "-I$mirror\firmware\include", "-I$mirror\gateway\include", "$mirror\tests\test_gateway.cpp", "$obj\gateway.o", "$obj\eh_protocol.o", "$obj\eh_measurement.o", '-o', "$obj\test_gateway.exe")
+        @($gpp, '-std=c++17', '-O2', "-I$mirror\firmware\include", "-I$mirror\gateway\include", "$mirror\tests\test_gateway.cpp", "$obj\gateway.o", "$obj\eh_protocol.o", "$obj\eh_measurement.o", '-o', "$obj\test_gateway.exe"),
+        @($gcc, '-std=c99', '-O2', "-I$mirror\firmware\target\sensors", "$mirror\tests\test_sensors.c", "$obj\i2c_bus_sim.o", "$obj\i2c_bus_hal.o", "$obj\sensor.o", "$obj\sensor_i2c.o", "$obj\sensor_sim.o", '-o', "$obj\test_sensors.exe")
     )
     $gccFailed = $null
     foreach ($step in $steps) {
@@ -108,11 +114,13 @@ if ((Test-Path $gcc) -and (Test-Path $gpp)) {
         $protocolOk = $LASTEXITCODE -eq 0
         $gatewayOutput = & '.\test_gateway.exe' 2>&1
         $gatewayOk = $LASTEXITCODE -eq 0
+        $sensorOutput = & '.\test_sensors.exe' 2>&1
+        $sensorOk = $LASTEXITCODE -eq 0
         Pop-Location
-        if ($protocolOk -and $gatewayOk) {
-            Add-Result '主机测试（GCC）' 'PASS' "$protocolOutput / $gatewayOutput".Trim()
+        if ($protocolOk -and $gatewayOk -and $sensorOk) {
+            Add-Result '主机测试（GCC）' 'PASS' "$protocolOutput / $gatewayOutput / $sensorOutput".Trim()
         } else {
-            Add-Result '主机测试（GCC）' 'FAIL' "protocol=$protocolOk gateway=$gatewayOk"
+            Add-Result '主机测试（GCC）' 'FAIL' "protocol=$protocolOk gateway=$gatewayOk sensors=$sensorOk"
         }
     }
 } else {

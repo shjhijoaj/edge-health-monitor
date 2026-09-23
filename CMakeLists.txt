@@ -28,18 +28,41 @@ add_executable(test_gateway tests/test_gateway.cpp)
 target_link_libraries(test_gateway PRIVATE edge_gateway_core)
 target_include_directories(test_gateway PRIVATE gateway/include firmware/include)
 
+# Sensor drivers and their I2C bus abstraction are also built for the host, so
+# the register conversions can be tested without a board.
+add_library(edge_sensor_core STATIC
+    firmware/target/sensors/i2c_bus_sim.c
+    firmware/target/sensors/i2c_bus_hal.c
+    firmware/target/sensors/sensor.c
+    firmware/target/sensors/sensor_i2c.c
+    firmware/target/sensors/sensor_sim.c
+)
+target_include_directories(edge_sensor_core PUBLIC
+    firmware/target/sensors
+    firmware/include
+)
+
+add_executable(test_sensors tests/test_sensors.c)
+target_link_libraries(test_sensors PRIVATE edge_sensor_core)
+target_include_directories(test_sensors PRIVATE firmware/target/sensors)
+
 if(MSVC)
     target_compile_options(edge_firmware_core PRIVATE /W4)
     target_compile_options(edge_gateway_core PRIVATE /W4)
     target_compile_options(test_protocol PRIVATE /W4)
     target_compile_options(test_gateway PRIVATE /W4)
+    target_compile_options(edge_sensor_core PRIVATE /W4)
+    target_compile_options(test_sensors PRIVATE /W4)
 else()
     target_compile_options(edge_firmware_core PRIVATE -Wall -Wextra -Wpedantic)
     target_compile_options(edge_gateway_core PRIVATE -Wall -Wextra -Wpedantic)
     target_compile_options(test_protocol PRIVATE -Wall -Wextra -Wpedantic)
     target_compile_options(test_gateway PRIVATE -Wall -Wextra -Wpedantic)
+    target_compile_options(edge_sensor_core PRIVATE -Wall -Wextra -Wpedantic)
+    target_compile_options(test_sensors PRIVATE -Wall -Wextra -Wpedantic)
 endif()
 
 enable_testing()
 add_test(NAME protocol_roundtrip COMMAND test_protocol)
 add_test(NAME gateway_rules COMMAND test_gateway)
+add_test(NAME sensor_drivers COMMAND test_sensors)

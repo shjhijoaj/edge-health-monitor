@@ -11,10 +11,10 @@ pwsh -NoProfile -ExecutionPolicy Bypass -File tools\verify_all.ps1
 | 步骤 | 结果 | 说明 |
 | --- | --- | --- |
 | Python 工具语法检查 | PASS | 4 个文件 |
-| 主机测试（MSVC + CTest） | PASS | 100% tests passed, 0 failed out of 2 |
-| 主机测试（GCC） | PASS | protocol tests passed / gateway tests passed |
+| 主机测试（MSVC + CTest） | PASS | 100% tests passed, 0 failed out of 3 |
+| 主机测试（GCC） | PASS | 协议、网关、传感器三组测试全部通过 |
 | Cortex-M3 固件交叉编译 | PASS | 生成两个 ELF 镜像 |
-| QEMU 看门狗演示 | PASS | 244 帧，错帧 0，看门狗复位 3 次 |
+| QEMU 看门狗演示 | PASS | 192 帧，错帧 0，看门狗复位 2 次 |
 
 同一份 C/C++ 代码在 MSVC 和 GCC 两套编译器下都通过测试，说明代码没有依赖某个编译器的扩展行为。
 
@@ -63,6 +63,14 @@ The gateway test checks:
 - all four alert paths for a deliberately abnormal sample;
 - JSON payload generation.
 
+传感器测试（`sensor_drivers`）在主机上运行寄存器级驱动，检查：
+
+- 三个器件的读数量程与工程单位（温度 61.33..82.00°C、电流最高 3100mA、振动最高 880mg）；
+- 器件离线时是否返回失败并置状态位，而不是静默返回 0；
+- 后端选择接口（I2C 驱动栈与合成后端可切换）。
+
+这三项都不需要硬件，也不需要 FreeRTOS，因此和协议、网关测试一起在 CTest 里跑。
+
 ## 本地实测结果（Windows / MSVC 19.41 / NMake）
 
 编译和测试：
@@ -108,26 +116,27 @@ Total Test time (real) = 0.12 sec
 
 | 检查项 | 实测结果 |
 | --- | --- |
-| 墙钟运行时间 | 90 s |
-| 固件输出帧 | 191 |
-| 主机独立解码还原 | 191 帧，错帧 0 |
+| 墙钟运行时间 | 90.4 s |
+| 固件输出帧 | 187 |
+| 主机独立解码还原 | 187 帧，错帧 0 |
 | 启动次数 | 3（含 2 次看门狗复位） |
 | 看门狗复位次数 | 2 |
 | 故障注入到复位恢复 | 完整走通：注入卡死 → 1.5 s 心跳超时 → AIRCR 复位 → `.noinit` 计数保留 |
 
 证据文件：`docs/evidence/watchdog-uart.log`、`watchdog-frames.ehraw`、`metrics-watchdog.json`、`watchdog-telemetry.svg`。
 
-帧数和复位次数会随仿真速度略有波动（QEMU 在同一台机器上每次运行速度不同），例如另一次 90 秒运行的记录是 150 帧、2 次启动、1 次复位。判断标准是错帧必须为 0、故障注入后必须出现复位恢复。Windows 与 Linux 两套运行脚本（`run_emulation.ps1` / `run_emulation.sh`）都验证过同一条链路。
+帧数和复位次数会随仿真速度略有波动（QEMU 在同一台机器上每次运行速度不同）。判断标准是错帧必须为 0、故障注入后必须出现复位恢复。Windows 与 Linux 两套运行脚本（`run_emulation.ps1` / `run_emulation.sh`）都验证过同一条链路。
+
+这些数据是通过传感器层产生的：固件读取 BME280 的温度寄存器并按数据手册整数补偿换算，再经协议打包上传。采集路径是寄存器级驱动，不是写死的常数。
 
 稳定性测试（`-Image stable -Seconds 600`，无故障注入）：
 
 | 检查项 | 实测结果 |
 | --- | --- |
-| 墙钟运行时间 | 600.3 s（10 分钟） |
-| 模拟运行时间 | 147 s |
-| 固件输出帧 | 1479 |
-| 主机独立解码还原 | 1479 帧，错帧 0 |
-| 回放到本地面板 | 1479 帧 |
+| 墙钟运行时间 | 600.1 s（10 分钟） |
+| 模拟运行时间 | 120 s |
+| 固件输出帧 | 1202 |
+| 主机独立解码还原 | 1202 帧，错帧 0 |
 | 启动次数 | 1 |
 | 看门狗复位次数 | 0 |
 

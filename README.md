@@ -17,6 +17,7 @@
 - C 协议库：同步字节、版本、消息类型、序号、长度、负载和 CRC16。
 - C 采样工具：整数限幅和振动 RMS 计算，适合迁移到 MCU 固件。
 - C++ 网关：处理 UART/RS485 字节流、CSV 遥测落盘、温度/电流/振动/传感器状态告警。
+- 传感器层：BME280 / INA219 / MPU6050 寄存器级驱动 + I2C 总线抽象，器件模型可在主机上跑测试。
 - 主机模拟器：单次或持续生成采样记录，可把原始二进制帧录制下来供离线回放。
 - Cortex-M 固件：真实 FreeRTOS 多任务固件，可交叉编译后在 QEMU 的 Cortex-M3 上运行。
 - 串口桥接：把真实设备按同一协议发来的字节流解码后写入本地面板。
@@ -147,6 +148,7 @@ python tools\serial_bridge.py --port COM3 --baud 115200 --format binary
 firmware/include/     MCU 无关的 C 接口
 firmware/src/         协议编解码与采样算法
 firmware/target/      Cortex-M3 固件：启动代码、板级串口、FreeRTOS 任务
+firmware/target/sensors/  传感器驱动、I2C 总线抽象与器件模型
 gateway/include/      C++ 网关公共接口
 gateway/src/          网关、规则引擎和主机模拟器
 config/               统一阈值配置

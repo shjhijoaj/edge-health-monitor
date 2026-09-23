@@ -7,12 +7,12 @@
   {
     "Step": "主机测试（MSVC + CTest）",
     "Status": "PASS",
-    "Detail": "100% tests passed, 0 tests failed out of 2"
+    "Detail": "100% tests passed, 0 tests failed out of 3"
   },
   {
     "Step": "主机测试（GCC）",
     "Status": "PASS",
-    "Detail": "protocol tests passed / gateway tests passed"
+    "Detail": "protocol tests passed / gateway tests passed / i2c sensors ok: temperature 61.33..82.00 C, current max 3100 mA, vibration max 880 mg sensor tests passed"
   },
   {
     "Step": "Cortex-M3 固件构建",
@@ -21,7 +21,7 @@
   },
   {
     "Step": "QEMU 看门狗演示",
-    "Status": "SKIP",
-    "Detail": "按参数跳过"
+    "Status": "PASS",
+    "Detail": "帧 192，错帧 0，看门狗复位 2，模拟 9 s"
   }
 ]

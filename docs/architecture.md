@@ -23,10 +23,13 @@ The current host build generates samples in `gateway/src/main.cpp`. A board port
 | 层 | 位置 | 运行形态 |
 | --- | --- | --- |
 | 固件 | `firmware/target/` + `firmware/src/` | ARM 交叉编译，QEMU 模拟 Cortex-M3，FreeRTOS 四任务 |
+| 传感器 | `firmware/target/sensors/` | 寄存器级驱动 + I2C 总线抽象；器件模型可换为 STM32 HAL |
 | 网关 | `gateway/src/` + `tools/serial_bridge.py` | 主机进程，解析帧、落盘、告警；桥接工具负责串口或网络输入 |
 | 面板 | `dashboard/` + `tools/dashboard_server.py` | 本机 HTTP 服务，实时展示与告警 |
 
 三层共用同一个协议定义（`docs/protocol.md`）和同一份阈值配置（`config/thresholds.cfg`）。
+
+传感器层的设计说明见 [`sensors.md`](sensors.md)：驱动只依赖三个总线操作，因此同一份驱动代码在仿真、主机测试和真实 STM32 上都能运行。
 
 ## 数据入口
 

@@ -33,6 +33,11 @@ sources=(
     "$repo_root/firmware/target/startup.c"
     "$repo_root/firmware/src/eh_protocol.c"
     "$repo_root/firmware/src/eh_measurement.c"
+    "$repo_root/firmware/target/sensors/i2c_bus_sim.c"
+    "$repo_root/firmware/target/sensors/i2c_bus_hal.c"
+    "$repo_root/firmware/target/sensors/sensor.c"
+    "$repo_root/firmware/target/sensors/sensor_i2c.c"
+    "$repo_root/firmware/target/sensors/sensor_sim.c"
     "$freertos_root/tasks.c"
     "$freertos_root/queue.c"
     "$freertos_root/list.c"
@@ -43,6 +48,7 @@ sources=(
 common_flags=(-mcpu=cortex-m3 -mthumb -std=gnu99 -Os -ffunction-sections -fdata-sections
               -fno-common -Wall
               -I"$repo_root/firmware/target"
+              -I"$repo_root/firmware/target/sensors"
               -I"$repo_root/firmware/include"
               -I"$freertos_root/include"
               -I"$port")
